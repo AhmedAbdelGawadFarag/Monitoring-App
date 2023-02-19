@@ -5,7 +5,7 @@ const schema = new mongoose.Schema({
   url: { type: String, required: true },
   protocol: { type: String, required: true },
   path: { type: String, required: true },
-  port: { type: String, required: true },
+  port: { type: Number, required: true },
   webhook: String,
   timeout: { type: Number, default: 5 * 1000 }, // 5 second
   interval: { type: Number, default: 10 * 1000 * 60 }, // 10 minutes

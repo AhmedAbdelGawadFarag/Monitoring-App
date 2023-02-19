@@ -2,6 +2,7 @@ const { User, UserValidationSchema } = require("../models/User");
 const { sendVEmail } = require("../services/mailer");
 const { generateToken, getUserID } = require("../middlewares/jwt-auth");
 const bcrypt = require("bcrypt");
+
 const getUser = (req, res) => {
   res.end("hello ooooo");
 };
