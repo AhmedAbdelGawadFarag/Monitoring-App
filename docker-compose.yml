@@ -8,11 +8,14 @@ services:
     volumes:
       - ./:/app
     environment:
-      - port=3000
-      - db_host=db
-      - db_name=bosta_task
+      - SERVER_PORT=3000
+      - SERVER_HOST=localhost
+      - DB_HOST=db
+      - DB_NAME=bosta_task
+      - SERVER_PROTOCOL=http
     env_file:
       - "./config/mailer.env"
+      - "./config/jwt.env"
   db:
     image: mongo:6.0.4
     ports:

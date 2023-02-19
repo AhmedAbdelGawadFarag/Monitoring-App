@@ -2,22 +2,23 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const userRoute = require("./routes/User");
-// const config = require("./config/config");
+const authRoute = require("./routes/Auth");
 
 app.use(express.json());
-app.use("/users", userRoute);
+app.use("/api/users", userRoute);
+app.use("/api/auth", authRoute);
 
-app.listen(process.env.port, () => {
-  console.log("Server is Running on port " + process.env.port);
+app.listen(process.env.SERVER_PORT, () => {
+  console.log("Server is Running on port " + process.env.SERVER_PORT);
 });
 
-let db_url = "mongodb://" + process.env.db_host + "/" + process.env.db_name;
+let db_url = "mongodb://" + process.env.DB_HOST + "/" + process.env.DB_NAME;
 
 console.log("db url is " + db_url);
 
 const connect = async () => {
   const db = await mongoose.connect(db_url, {
-    serverSelectionTimeoutMS: 1 * 60 * 1000 , //  try to reconnect for 1 minutes then timeout
+    serverSelectionTimeoutMS: 1 * 60 * 1000, //  try to reconnect for 1 minutes then timeout
   });
 };
 

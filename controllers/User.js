@@ -1,6 +1,7 @@
 const { User, UserValidationSchema } = require("../models/User");
 const { sendVEmail } = require("../services/mailer");
-
+const { generateToken, getUserID } = require("../middlewares/jwt-auth");
+const bcrypt = require("bcrypt");
 const getUser = (req, res) => {
   res.end("hello ooooo");
 };
@@ -19,11 +20,30 @@ const createUser = async (req, res) => {
 
   // check if we can save the user
   try {
-    let usr = new User(req.body);
-    await usr.save();
-    console.log(usr);
+    let salt = await bcrypt.genSalt(10);
+    let hashedPassword = await bcrypt.hash(req.body.password, salt);
 
-    await sendVEmail(usr);
+    let usr = new User({
+      userName: req.body.userName,
+      password: hashedPassword,
+      email: req.body.email,
+    });
+
+    console.log(usr);
+    await usr.save();
+
+    token = generateToken(usr.id);
+
+    let vLink =
+      process.env.SERVER_PROTOCOL +
+      "://" +
+      process.env.SERVER_HOST +
+      ":" +
+      process.env.SERVER_PORT +
+      "/api/users/verify?token=" +
+      token;
+
+    await sendVEmail(usr, vLink);
 
     return res.status(200).json(usr);
   } catch (err) {
@@ -31,7 +51,29 @@ const createUser = async (req, res) => {
   }
 };
 
+const verify = async (req, res) => {
+  res.setHeader("content-type", "application/json");
+  token = req.query.token;
+  if (!token)
+    return res
+      .status(400)
+      .json({ error: "token param is missing please add one" });
+
+  try {
+    let userId = getUserID(token);
+    let user = await User.findById(userId);
+
+    user.verified = true;
+    await user.save();
+
+    return res.status(200).json({ message: "User Verified Successfully" });
+  } catch (error) {
+    return res.status(400).json(error.message);
+  }
+};
+
 module.exports = {
   getUser,
   createUser,
+  verify,
 };

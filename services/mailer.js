@@ -9,11 +9,11 @@ let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
 
-const sendVEmail = (user) => {
+const sendVEmail = (user, vLink) => {
   let sender = {
     email: "bosta-test@bosta.com",
   };
-  console.log(user.email)
+  console.log(user.email);
   let to = [
     {
       email: user.email,
@@ -25,7 +25,7 @@ const sendVEmail = (user) => {
     sender,
     to,
     subject: "Bosta Verificaton Email",
-    textContent: "hello this is bosta verification email",
+    textContent: "hello this is bosta verification email please use that link to verify your email " + vLink,
     headers: {
       "X-Mailin-custom":
         "custom_header_1:custom_value_1|custom_header_2:custom_value_2",

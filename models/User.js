@@ -1,7 +1,10 @@
 const mongoose = require("mongoose");
-const schema = require("../schemas/User");
 const joi = require("joi");
 const uniqueValidator = require("mongoose-unique-validator");
+
+//model schema in the schemas folder
+const schema = require("../schemas/User");
+
 
 // model validation
 
