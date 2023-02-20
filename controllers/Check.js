@@ -1,7 +1,7 @@
 const { Check, CheckValidationSchema } = require("../models/Check");
 const { getUserID } = require("../middlewares/jwt-auth");
 const { User } = require("../models/User");
-
+const cronJob = require("../services/cronJob");
 // get check by tags
 // if the user didnt give any tag as a query param then it gets all the checks
 const getChecks = async (req, res) => {
@@ -39,7 +39,6 @@ const getChecks = async (req, res) => {
   } catch (err) {
     return res.status(400).json(err.message);
   }
-
 };
 
 const createCheck = async (req, res) => {
@@ -63,6 +62,9 @@ const createCheck = async (req, res) => {
     await check.save();
     user.checks.push(check.id);
     await user.save();
+    
+    let job = new cronJob();
+    await job.createReportJob(check);
 
     return res.status(200).json(check);
   } catch (err) {

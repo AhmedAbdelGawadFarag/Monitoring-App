@@ -19,7 +19,7 @@ const CheckValidationSchema = joi.object({
   port: joi.number().required(),
   webhook: joi.string(),
   timeout: joi.number().default(5 * 1000),
-  interval: joi.number().default(10 * 1000 * 60),
+  interval: joi.number().default(10),
   threshold: joi.number().default(1),
   authentication: joi.object({
     userName: joi.string().required(),
@@ -31,7 +31,7 @@ const CheckValidationSchema = joi.object({
       value: joi.string().required(),
     })
   ),
-  assert: joi.object({ statusCode: joi.number() }),
+  assert: joi.object({ statusCode: joi.number() }).default({ statusCode: 200 }),
   tags: joi.array().items(joi.string()),
   ignoreSSl: joi.bool().default(false),
 });
