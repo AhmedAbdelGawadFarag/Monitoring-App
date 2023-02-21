@@ -36,9 +36,36 @@ const CheckValidationSchema = joi.object({
   ignoreSSl: joi.bool().default(false),
 });
 
+const updateValidationSchema = joi.object({
+  authToken: joi.string(), // auth token of the user
+  name: joi.string(),
+  url: joi.string(),
+  protocol: joi.string().valid("HTTP", "http", "HTTPS", "https", "tcp", "TCP"),
+  path: joi.string(),
+  port: joi.number(),
+  webhook: joi.string(),
+  timeout: joi.number(),
+  interval: joi.number(),
+  threshold: joi.number(),
+  authentication: joi.object({
+    userName: joi.string(),
+    password: joi.string(),
+  }),
+  httpHeaders: joi.array().items(
+    joi.object({
+      key: joi.string(),
+      value: joi.string(),
+    })
+  ),
+  assert: joi.object({ statusCode: joi.number() }),
+  tags: joi.array().items(joi.string()),
+  ignoreSSl: joi.bool(),
+});
+
 schema.plugin(uniqueValidator);
 
 module.exports = {
   Check: mongoose.model("Check", schema),
   CheckValidationSchema: CheckValidationSchema,
+  updateValidationSchema: updateValidationSchema,
 };
