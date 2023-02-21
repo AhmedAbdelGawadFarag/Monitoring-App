@@ -4,11 +4,13 @@ const app = express();
 const userRoute = require("./routes/User");
 const authRoute = require("./routes/Auth");
 const checkRoute = require("./routes/Check");
+const reportRoute = require("./routes/Report");
 
 app.use(express.json());
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/checks", checkRoute);
+app.use("/api/reports", reportRoute);
 
 app.listen(process.env.SERVER_PORT, () => {
   console.log("Server is Running on port " + process.env.SERVER_PORT);

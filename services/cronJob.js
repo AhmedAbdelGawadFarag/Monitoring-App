@@ -3,6 +3,7 @@ const axios = require("axios");
 const axiosTime = require("axios-time");
 
 const { Report } = require("../models/Report");
+const { sendServiceDownEmail } = require("./mailer");
 
 axiosTime(axios);
 
@@ -26,7 +27,7 @@ class cronJob {
         return { up: false, status: res.status, responseTime: elapsedTime };
       }
     } catch {
-      return { up: false, status: 400, responseTime: elapsedTime };
+      return { up: false, status: 400, responseTime: 0 };
     }
   };
 
@@ -37,7 +38,7 @@ class cronJob {
   createCheckJob = async (check) => {
     // job that runs every 10 seconds to check if the url is up or down
 
-    cron.schedule("*/10 * * * * *", async () => {
+    cron.schedule(`0 */${check.interval} * * * *`, async () => {
       try {
         let { up, status, responseTime } = await this.isUP(check);
 
@@ -71,7 +72,7 @@ class cronJob {
     });
   };
 
-  createReportJob = async (check) => {
+  createReportJob = async (check, user) => {
     await this.createCheckJob(check);
     // run interval in minutes
     cron.schedule(`0 */${check.interval} * * * *`, async () => {
@@ -89,6 +90,9 @@ class cronJob {
         checkId: check.id,
       };
 
+      if (current_check.status == "DOWN") {
+        sendServiceDownEmail(user, check.url);
+      }
       // if he didnt find any report
       // make a new report
       try {

@@ -62,9 +62,9 @@ const createCheck = async (req, res) => {
     await check.save();
     user.checks.push(check.id);
     await user.save();
-    
+
     let job = new cronJob();
-    await job.createReportJob(check);
+    await job.createReportJob(check, user);
 
     return res.status(200).json(check);
   } catch (err) {
